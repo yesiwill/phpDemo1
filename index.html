@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>易合支付 PHP Demo Index</title>
+</head>
+<body>
+
+    <form>
+        <p><input id="inputprice" type="text" name="inputprice" class="form-control" placeholder="请输入金额" required></p>
+                
+        <div class="radio">
+            <label>            
+                <p><input type="radio" name="demo1" id="demo1-alipay" value="option1" checked="">
+                    支付宝支付</p>
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <p><input type="radio" name="demo1" id="demo1-weixin" value="option2">
+                微信支付</p>
+            </label>
+        </div>
+        <button type="button" id="demoBtn1">确认购买</button>        
+    </form>
+
+
+
+       <form style="display:none;" id="formpay" name="formpay" method="post" action="http://vippay.cnyueqiu.com/">
+        <input name='order_name' id='order_name' type='text' value='' />
+        <input name='order_type' id='order_type' type='text' value='' />
+        <input name='extension' id='extension' type='text' value=''/>
+        <input name='redirect_url' id='redirect_url' type='text' value=''/>
+        <input name='notify_url' id='notify_url' type='text' value=''/>
+        <input name='order_id' id='order_id' type='text' value=''/>
+        <input name='uid' id='uid' type='text' value=''/>
+        <input name='order_price' id='order_price' type='text' value=''/>
+        <input name='pay_format' id='pay_format' type='text' value=''/>
+        <input name='sign' id='sign' type='text' value=''/>
+				<input type="submit" id="submitdemo1">
+			</form>
+
+<!-- Jquery files -->
+<script type="text/javascript" src="https://cdn.staticfile.org/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+$().ready(function(){
+    function getorder_type(){
+        return ($("#demo1-alipay").is(':checked') ? "alipay" : "wechat" );  
+    }
+
+    $("#demoBtn1").click(function(){
+        $.post(
+            "pay.php",
+            {
+                order_price : $("#inputprice").val(), 
+                order_type : getorder_type(),
+
+            },
+            function(data){
+						if (data.code > 0){
+					$("#order_name").val(data.data.order_name);
+                    $("#order_type").val(data.data.order_type);
+                    $('#extension').val(data.data.extension);
+                    $('#redirect_url').val(data.data.redirect_url);
+					$('#notify_url').val(data.data.notify_url);
+                    $('#order_id').val(data.data.order_id);
+                    $('#uid').val(data.data.uid);
+                    $('#order_price').val(data.data.order_price);
+                    $('#pay_format').val(data.data.pay_format);
+                    $('#sign').val(data.data.sign);
+					$('#submitdemo1').click();
+
+						} else {
+							alert(data.msg);
+						}
+					}, "json"
+				);
+    });
+});
+</script>    
+
+
+</body>
+</html>
